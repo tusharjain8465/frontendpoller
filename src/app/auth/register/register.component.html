@@ -1,0 +1,39 @@
+<div class="register-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" id="registerForm">
+    <!-- Username -->
+    <div>
+      <input formControlName="username" placeholder="Username" id="username" />
+      <small *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">Invalid Username</small>
+    </div>
+
+    <!-- Mobile -->
+    <div>
+      <input formControlName="mobileNumber" placeholder="Mobile" id="mobileNumber" />
+      <small *ngIf="registerForm.get('mobileNumber')?.touched && registerForm.get('mobileNumber')?.invalid">Invalid Mobile</small>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <input formControlName="mail" placeholder="Email" id="email" />
+      <small *ngIf="registerForm.get('mail')?.touched && registerForm.get('mail')?.invalid">Invalid Email</small>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <input type="password" formControlName="password" placeholder="Password" id="password" (input)="onPasswordInput()" />
+      <div id="passwordStrength" *ngIf="passwordStrength > 0">
+        <div id="strengthFill" [style.width.%]="passwordStrength" [style.background]="passwordStrengthColor"></div>
+        <p id="strengthText" [style.color]="passwordStrengthColor">{{ passwordStrengthLabel }}</p>
+      </div>
+    </div>
+
+    <!-- Confirm Password -->
+    <div>
+      <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" id="confirmPassword" />
+      <small *ngIf="registerForm.errors?.mismatch && registerForm.get('confirmPassword')?.touched">Passwords do not match</small>
+    </div>
+
+    <!-- Submit Button -->
+    <button class="register-btn" [disabled]="submitting">{{ submitting ? 'Creating Account...' : 'Register' }}</button>
+  </form>
+</div>

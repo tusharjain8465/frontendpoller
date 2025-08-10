@@ -1,0 +1,117 @@
+.view-history-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 40px;
+  background: #fdfdfd;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-weight: 700;
+  border-bottom: 2px solid #007bff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.filter-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.filter-section label {
+  font-weight: 500;
+  font-size: 18px;
+  color: #333;
+}
+
+select {
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  background-color: #fff;
+  transition: border 0.3s;
+}
+
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 25px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #e3f2fd, #ffffff);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #007bff;
+}
+
+.date-group h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.sale-entry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  background: #ffffff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-left 0.2s ease, background-color 0.2s ease;
+  gap: 10px;
+  border-left: 4px solid transparent;
+}
+
+.sale-entry:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 123, 255, 0.15);
+  background-color: #e8f3ff; /* light blue background */
+  border-left: 4px solid #007bff;
+}
+
+
+.sale-entry div {
+  color: #2d3436;
+  font-size: 15px;
+  padding: 2px 0;
+}
+
+.sale-entry strong {
+  color: #34495e;
+}
+
+.no-data {
+  text-align: center;
+  font-size: 20px;
+  color: #999;
+  margin-top: 50px;
+  font-style: italic;
+}

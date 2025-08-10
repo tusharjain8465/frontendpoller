@@ -1,0 +1,21 @@
+/* styles.css (global styles) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.6); /* or rgba(0, 0, 0, 0.5) */
+  z-index: -1;
+}
+
+
+
+body {
+  background-image: url('assets/new.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}

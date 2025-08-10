@@ -1,0 +1,59 @@
+<div class="sales-management-container">
+  <form (ngSubmit)="onSubmit()">
+    <div class="horizontal-flex-form">
+      <div class="form-group">
+        <label for="saleDateTime">Date</label>
+        <input type="date" id="saleDateTime" [(ngModel)]="saleForm.saleDateTime" name="saleDateTime" required />
+      </div>
+
+      <div class="form-group">
+        <label for="client">Client</label>
+        <select id="client" [(ngModel)]="saleForm.clientId" name="clientId" required>
+          <option value="" disabled>Select client</option>
+          <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="accessory">Accessory</label>
+        <input type="text" id="accessory" [(ngModel)]="saleForm.accessoryName" name="accessoryName"
+          placeholder="Enter Item" required />
+      </div>
+
+      <div class="form-group">
+        <label for="price">Total Price</label>
+        <input type="number" id="price" [(ngModel)]="saleForm.totalPrice" name="totalPrice" placeholder="Enter cost"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="profit">Profit</label>
+        <input type="number" id="profit" [(ngModel)]="saleForm.profit" name="profit" placeholder="Enter profit" />
+      </div>
+
+      <div class="form-group type-toggle-wrapper">
+        <label> </label>
+        <div class="toggle-buttons-right">
+          <button type="button" class="small-toggle-button" [ngClass]="{ 'active-blue': saleType === 'sale' }"
+            (click)="toggleSaleType('sale')">
+            Sale
+          </button>
+          <button type="button" class="small-toggle-button" [ngClass]="{ 'active-red': saleType === 'return' }"
+            (click)="toggleSaleType('return')">
+            Return
+          </button>
+        </div>
+      </div>
+
+
+      <div class="form-group wide-note">
+        <label for="note">Note</label>
+        <textarea id="note" [(ngModel)]="saleForm.note" name="note" rows="1"></textarea>
+      </div>
+    </div>
+
+    <div class="button-group-right">
+      <button class="submit-btn" type="submit">Submit</button>
+    </div>
+  </form>
+</div>

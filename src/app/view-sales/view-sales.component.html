@@ -1,0 +1,85 @@
+<div class="view-sales-container">
+  <h2>View Sales</h2>
+
+  <div class="filter-section">
+    <div class="filter-group">
+      <label for="clientSelect">Client</label>
+     <select [(ngModel)]="selectedClientId" (change)="filterSaleEnttries()">
+  <option [ngValue]="null">All Clients</option>
+  <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
+</select>
+
+    </div>
+
+    <div class="filter-group">
+      <label for="startDate">Start Date</label>
+      <input id="startDate" type="date" [(ngModel)]="startDate" (change)="filterEntries()" />
+    </div>
+
+    <div class="filter-group">
+      <label for="endDate">End Date</label>
+      <input id="endDate" type="date" [(ngModel)]="endDate" (change)="filterEntries()" />
+    </div>
+
+    <button (click)="resetFilters()">Reset</button>
+  </div>
+
+  <div *ngIf="Object.keys(groupedEntries).length === 0" class="no-data">
+    No sales found for selected filters.
+  </div>
+
+  <div *ngFor="let date of Object.keys(groupedEntries)">
+    <div class="date-group">
+      <h3>{{ date }}</h3>
+
+      <div class="sale-entry" *ngFor="let entry of groupedEntries[date]">
+        <!-- View Mode -->
+        <div *ngIf="!entry.isEditing" class="entry-row">
+          <div class="entry-field"><strong>Date:</strong> {{ entry.date }}</div>
+          <div class="entry-field"><strong>Client:</strong> {{ entry.clientName }}</div>
+          <div class="entry-field"><strong>Accessory:</strong> {{ entry.accessoryName }}</div>
+          <div class="entry-field"><strong>Total Price:</strong> ₹{{ entry.totalPrice }}</div>
+          <div class="entry-field"><strong>Profit:</strong> ₹{{ entry.profit }}</div>
+          <div class="entry-actions">
+            <button (click)="enableEdit(entry)">Edit</button>
+            <button (click)="deleteEntry(entry)">Delete</button>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div *ngIf="entry.isEditing" class="entry-row editing">
+          <div class="form-group">
+            <div class="entry-field"><strong>Date:</strong> {{ entry.date }}</div>
+
+            <!-- <label>Date</label>
+            <input type="date" [(ngModel)]="entry.date" /> -->
+          </div>
+          <div class="form-group">
+            <!-- <label>Client</label>
+            <select [(ngModel)]="entry.clientName">
+              <option *ngFor="let client of clients" [value]="client.name">{{ client.name }}</option>
+            </select> -->
+            <div class="entry-field"><strong>Client:</strong> {{ entry.clientName }}</div>
+          </div>
+          <div class="form-group">
+            <label>Accessory</label>
+            <input type="text" [(ngModel)]="entry.accessoryName" />
+          </div>
+          <div class="form-group">
+            <label>Total Price</label>
+            <input type="number" [(ngModel)]="entry.totalPrice" />
+          </div>
+          <div class="form-group">
+            <label>Profit</label>
+            <input type="number" [(ngModel)]="entry.profit" />
+          </div>
+          <div class="entry-actions">
+            <button (click)="submitEdit(entry)">Submit</button>
+            <button (click)="discard(entry)">Discard</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

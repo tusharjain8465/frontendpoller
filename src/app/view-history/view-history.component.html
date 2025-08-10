@@ -1,0 +1,27 @@
+<div class="view-history-container">
+  <h2>📜 View Sales History</h2>
+
+  <div class="filter-section">
+    <label for="clientSelect">🧑‍💼 Select Client:</label>
+    <select [(ngModel)]="selectedClient" (ngModelChange)="filterSales()" id="clientSelect">
+      <option value="">All Clients</option>
+      <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+    </select>
+  </div>
+
+  <div class="history-list" *ngIf="groupedSales && groupedSales.length > 0; else noData">
+    <div *ngFor="let group of groupedSales" class="date-group">
+      <h3>{{ group.date | date: 'fullDate' }}</h3>
+      <div *ngFor="let sale of group.entries" class="sale-entry">
+        <div><strong>Client:</strong> {{ sale.clientName }}</div>
+        <div><strong>Accessory:</strong> {{ sale.accessoryName }}</div>
+        <div><strong>Total Price:</strong> ₹{{ sale.totalPrice }}</div>
+        <div><strong>Note:</strong> {{ sale.note || '—' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <p class="no-data">No sales history available for the selected client.</p>
+  </ng-template>
+</div>

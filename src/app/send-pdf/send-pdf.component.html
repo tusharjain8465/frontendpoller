@@ -1,0 +1,78 @@
+<div class="send-pdf-container">
+  <h2>🧾 Send Sales PDF</h2>
+
+  <form (ngSubmit)="onSubmit()" class="pdf-form">
+    <!-- Client Dropdown -->
+    <div class="form-group">
+      <label for="client">Select Client:</label>
+      <select id="client" [(ngModel)]="filters.client" name="client" required>
+        <option value="">-- Choose --</option>
+        <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+      </select>
+    </div>
+
+    <!-- Use Date Range Toggle -->
+    <div class="form-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="filters.useDateRange" name="useDateRange" />
+        Use Date Range
+      </label>
+    </div>
+
+    <!-- Date Range -->
+    <div *ngIf="filters.useDateRange" class="form-group date-range">
+      <label>From:</label>
+      <input type="date" [(ngModel)]="filters.startDate" name="startDate" required />
+
+      <label>To:</label>
+      <input type="date" [(ngModel)]="filters.endDate" name="endDate" required />
+    </div>
+
+    <!-- Days -->
+    <div *ngIf="!filters.useDateRange" class="form-group">
+      <label>Previous Days:</label>
+      <input type="number" min="0" [(ngModel)]="filters.days" name="days" />
+    </div>
+
+    <!-- Old Balance -->
+    <div class="form-group">
+      <label>Old Balance (₹):</label>
+      <input type="number" [(ngModel)]="filters.oldBalance" name="oldBalance" min="0" />
+    </div>
+
+    <!-- Use Deposit Info Toggle -->
+    <div class="form-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="filters.useDeposit" name="useDeposit" />
+        Add Deposit Info
+      </label>
+    </div>
+
+    <!-- Deposit Fields (conditionally shown) -->
+    <div *ngIf="filters.useDeposit">
+      <!-- Deposit Amount -->
+      <div class="form-group">
+        <label>Deposit Amount (₹):</label>
+        <input type="number" [(ngModel)]="filters.depositAmount" name="depositAmount" min="0" />
+      </div>
+
+      <!-- Deposit Date/Time -->
+      <div class="form-group">
+        <label>Deposit Date/Time:</label>
+        <input type="date" [(ngModel)]="filters.depositDatetime" name="depositDatetime" />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="isGenerating">📤 Generate & Send PDF</button>
+
+    <!-- Toast Message -->
+    <p class="toast" *ngIf="toastMsg">{{ toastMsg }}</p>
+  </form>
+
+  <!-- PDF Preview -->
+  <div *ngIf="previewUrl" class="preview">
+    <h3>📄 PDF Preview:</h3>
+    <iframe [src]="previewUrl" width="100%" height="500px" frameborder="0"></iframe>
+  </div>
+</div>

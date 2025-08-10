@@ -1,0 +1,89 @@
+<div class="client-dashboard">
+
+  <!-- Client Selection Dropdown -->
+  <div class="client-selector">
+    <label for="clientSelect">🧑‍💼 Select Client:</label>
+    <select id="clientSelect" [(ngModel)]="selectedClientId" (change)="onClientSelect()">
+      <option [ngValue]="null">-- Choose --</option>
+      <option *ngFor="let client of clients" [ngValue]="client.id">
+        {{ client.name }} ({{ client.location }})
+      </option>
+    </select>
+  </div>
+
+  <!-- Layout: Client Info | Sales Entries -->
+  <div class="client-layout" *ngIf="selectedClient && editedClient">
+
+    <!-- Client Info Card -->
+    <div class="client-info-card">
+      <h2 *ngIf="!editMode">{{ editedClient.name }}</h2>
+      <input *ngIf="editMode" [(ngModel)]="editedClient.name" placeholder="Client Name" />
+
+      <p *ngIf="!editMode"><strong>Location:</strong> {{ editedClient.location }}</p>
+      <input *ngIf="editMode" [(ngModel)]="editedClient.location" placeholder="Location" />
+
+      <p *ngIf="!editMode"><strong>Contact:</strong> {{ editedClient.contact }}</p>
+      <input *ngIf="editMode" [(ngModel)]="editedClient.contact" placeholder="Contact" />
+
+      <div class="action-buttons">
+        <button class="edit-btn" *ngIf="!editMode" (click)="enableEdit()" title="Edit Client">✏️ Edit</button>
+        <button class="save-btn" *ngIf="editMode" (click)="saveClient()" title="Save Changes">💾 Save</button>
+        <button class="delete-btn" (click)="openDeleteModal()" title="Delete Client">🗑️ Delete</button>
+      </div>
+    </div>
+
+    <!-- Sales Table -->
+    <div class="sales-card">
+      <h3>🛍️ Sales History</h3>
+      <div class="sales-table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Accessory</th>
+              <th>Price (₹)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sale of editedClient.sales">
+              <td>
+                <p *ngIf="editDataForClient?.id !== sale.id">{{ sale.saleDateTime | date: 'dd-MM-yyyy' }}</p>
+                <input *ngIf="editDataForClient?.id === sale.id" [(ngModel)]="sale.saleDateTime" type="date" />
+              </td>
+              <td>
+                <p *ngIf="editDataForClient?.id !== sale.id">{{ sale.accessoryName }}</p>
+                <input *ngIf="editDataForClient?.id === sale.id" [(ngModel)]="sale.accessoryName"
+                  placeholder="Accessory Name" />
+              </td>
+              <td>
+                <p *ngIf="editDataForClient?.id !== sale.id">{{ sale.totalPrice }}</p>
+                <input *ngIf="editDataForClient?.id === sale.id" [(ngModel)]="sale.totalPrice" type="number"
+                  placeholder="Total Price" />
+              </td>
+              <td>
+                <!-- Not editing -->
+                <div *ngIf="editDataForClient?.id !== sale.id">
+                  <button class="edit-btn" (click)="editDataForClient = { id: sale.id }" title="Edit Sale">✏️</button>
+                  <button class="delete-btn" (click)="confirmDeleteSales(sale)" title="Delete Sale">🗑️</button>
+                </div>
+
+                <!-- Editing mode -->
+                <div *ngIf="editDataForClient?.id === sale.id">
+                  <button class="save-btn" (click)="confirmEditSales(sale)" title="Save Sale">💾</button>
+                  <button class="cancel-btn" (click)="editDataForClient = null" title="Cancel Edit">❌</button>
+                </div>
+              </td>
+
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</div>

@@ -1,0 +1,10 @@
+<!-- Navigation Bar -->
+<nav style="margin: 10px 20px 30px;">
+  <a routerLink="/login" routerLinkActive="active" style="margin-right: 20px;">🔐 Login</a>
+  <a routerLink="/register" routerLinkActive="active">📝 Register</a>
+  <!-- Use (click) here instead of routerLink -->
+  <a href="#" (click)="logout()" style="cursor:pointer; margin-left: 20px;">🚪 Logout</a>
+</nav>
+
+<!-- 🔄 Router View -->
+<router-outlet></router-outlet>

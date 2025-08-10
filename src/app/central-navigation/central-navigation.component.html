@@ -1,0 +1,18 @@
+<div class="dashboard-container">
+    <!-- Vishal sees all -->
+    <ng-container *ngIf="isVishal; else limitedUser">
+        <a class="dashboard-tile" routerLink="/client-management">Client Management</a>
+        <a class="dashboard-tile" routerLink="/sales-management">Sales Management</a>
+        <a class="dashboard-tile" routerLink="/profit">Profit</a>
+        <a class="dashboard-tile" routerLink="/view-history">View History</a>
+        <a class="dashboard-tile" routerLink="/view-sales">View Sales</a>
+        <a class="dashboard-tile" routerLink="/send-pdf">Send PDF</a>
+    </ng-container>
+
+    <!-- Others see only Sales Management -->
+    <ng-template #limitedUser>
+        <a class="dashboard-tile" routerLink="/sales-management">Sales Management</a>
+        <a class="dashboard-tile" routerLink="/view-history">View History</a>
+        <a class="dashboard-tile" routerLink="/send-pdf">Send PDF</a>
+    </ng-template>
+</div>

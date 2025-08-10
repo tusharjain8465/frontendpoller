@@ -1,0 +1,64 @@
+<div class="profit-container">
+  <h2>📊 Profit / Loss Summary</h2>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <!-- Client Dropdown -->
+    <label for="client">Client:</label>
+    <select [(ngModel)]="filter.client" name="client" required>
+      <option value="All">All</option>
+      <option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</option>
+    </select>
+
+    <!-- Date Range & Days Filter in One Row -->
+    <div class="date-days-row">
+      <!-- Date Range -->
+      <div class="date-range">
+        <div>
+          <label for="startDate">Start Date:</label>
+          <input
+            type="date"
+            [(ngModel)]="startDate"
+            name="startDate"
+            [disabled]="days !== null && days !== undefined"
+          />
+        </div>
+        <div>
+          <label for="endDate">End Date:</label>
+          <input
+            type="date"
+            [(ngModel)]="endDate"
+            name="endDate"
+            [disabled]="days !== null && days !== undefined"
+          />
+        </div>
+      </div>
+
+      <!-- Days Filter -->
+      <div class="days-filter">
+        <label for="days">Last Days:</label>
+        <input
+          type="number"
+          min="1"
+          [(ngModel)]="days"
+          name="days"
+          [disabled]="startDate || endDate ? true : false"
+        />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="action-buttons">
+      <button (click)="onSubmit()">✅ Submit</button>
+      <button class="reset-btn" (click)="resetFilter()">🔄 Reset</button>
+    </div>
+  </div>
+
+  <!-- Result Box -->
+  <div *ngIf="isSubmitted" class="summary-box">
+    <p>Total Sales: ₹{{ result.totalSales }}</p>
+    <p [ngClass]="{'profit': result.profit > 0, 'loss': result.profit < 0}">
+      {{ result.profit >= 0 ? 'Profit' : 'Loss' }}: ₹{{ result.profit | number:'1.2-2' }}
+    </p>
+  </div>
+</div>

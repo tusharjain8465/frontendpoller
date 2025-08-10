@@ -1,0 +1,129 @@
+/* Full page center with soft background gradient */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f6f9fc, #e9eff5);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Form box */
+#registerForm {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 480px;
+  transition: transform 0.3s ease;
+}
+
+#registerForm:hover {
+  transform: translateY(-4px);
+}
+
+/* Form title */
+#registerForm h2 {
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 28px;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Input fields */
+#registerForm input {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border: 1px solid #ccd6dd;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #f8fafc;
+  transition: border 0.3s, background 0.3s;
+}
+
+#registerForm input:focus {
+  border-color: #3399ff;
+  background-color: #ffffff;
+  outline: none;
+}
+
+/* Disable style */
+input:disabled {
+  background-color: #eaeaea;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Password strength bar */
+#passwordStrength {
+  height: 6px;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-top: -12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+#strengthFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease-in-out;
+}
+
+#strengthText {
+  font-size: 12px;
+  text-align: right;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+/* Button styling */
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.register-btn:hover {
+  background: linear-gradient(90deg, #0056b3, #00408a);
+}
+
+/* Links for register and forgot password */
+.form-footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-footer a {
+  color: #007bff;
+  text-decoration: none;
+  margin: 0 6px;
+  transition: color 0.2s;
+}
+
+.form-footer a:hover {
+  color: #004eaa;
+  text-decoration: underline;
+}
+
+/* Error messages */
+small {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: block;
+}

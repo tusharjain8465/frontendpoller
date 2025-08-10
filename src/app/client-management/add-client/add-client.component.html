@@ -1,0 +1,22 @@
+<div class="add-client-container">
+  <h2>Add New Client</h2>
+  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+    
+    <label for="clientName">Client Name *</label>
+    <input id="clientName" formControlName="clientName" type="text" />
+
+    <label for="location">Location</label>
+    <input id="location" formControlName="location" type="text" />
+
+    <label for="contact">Contact *</label>
+    <input id="contact" formControlName="contact" type="text" maxlength="10" />
+    <div class="error" *ngIf="contactInvalid">Enter a valid 10-digit number</div>
+
+    <button type="submit" [disabled]="clientForm.invalid">Save</button>
+  </form>
+
+  <div class="toast" *ngIf="showToast">
+    ✅ Client saved successfully!
+  </div>
+</div>
+
