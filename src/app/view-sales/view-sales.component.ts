@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';  // import environment
 
 interface SaleEntry {
   id: number;
@@ -13,8 +14,6 @@ interface SaleEntry {
   returnFlag: boolean;        // ✅ Add this
   isEditing?: boolean;        // Optional for UI
 }
-
-
 
 @Component({
   selector: 'app-view-sales',
@@ -32,6 +31,9 @@ export class ViewSalesComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
 
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
+  private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -40,15 +42,15 @@ export class ViewSalesComponent implements OnInit {
   }
 
   fetchClients(): void {
-    this.http.get<any[]>('http://localhost:8080/api/clients/all').subscribe((res) => {
+    this.http.get<any[]>(`${this.clientBaseUrl}/all`).subscribe((res) => {
       this.clients = res;
     });
   }
 
   fetchSales(): void {
-    let url = 'http://localhost:8080/api/sales/all-sales/all';
+    let url = `${this.salesBaseUrl}/all-sales/all`;
     if (this.selectedClientId) {
-      url = `http://localhost:8080/api/sales/by-client/${this.selectedClientId}`;
+      url = `${this.salesBaseUrl}/by-client/${this.selectedClientId}`;
     }
 
     this.http.get<SaleEntry[]>(url).subscribe((res) => {
@@ -62,7 +64,6 @@ export class ViewSalesComponent implements OnInit {
   }
 
   filterEntries(): void {
-    debugger
     let filtered = [...this.salesEntries];
 
     if (this.startDate) {
@@ -93,29 +94,24 @@ export class ViewSalesComponent implements OnInit {
   deleteEntry(entry: SaleEntry): void {
     const confirmed = confirm(`Are you sure you want to delete "${entry.accessoryName}"?`);
     if (confirmed) {
-      // this.salesEntries = this.salesEntries.filter((e) => e.id !== entry.id);
       this.http
-      .delete(`http://localhost:8080/api/sales/delete/${entry.id}`)
-      .subscribe(() => {
-        this.fetchSales();
-        // debugger
-      }, (err) => {
-        this.fetchSales();
-      });
+        .delete(`${this.salesBaseUrl}/delete/${entry.id}`)
+        .subscribe(() => {
+          this.fetchSales();
+        }, () => {
+          this.fetchSales();
+        });
     }
-
-     
   }
 
   selectedEditData: SaleEntry | any = {};
 
   enableEdit(entry: SaleEntry): void {
     entry.isEditing = true;
-    this.selectedEditData = {...entry};
+    this.selectedEditData = { ...entry };
   }
 
   submitEdit(entry: SaleEntry): void {
-    debugger
     const patchPayload = {
       accessoryName: entry.accessoryName,
       quantity: entry.quantity,
@@ -124,11 +120,11 @@ export class ViewSalesComponent implements OnInit {
       saleDateTime: entry.saleDateTime.split('.')[0], // remove milliseconds if any
       returnFlag: entry.returnFlag,
       clientName: entry.clientName,
-      id : entry.id
+      id: entry.id
     };
 
     this.http
-      .put(`http://localhost:8080/api/sales/edit/${entry.id}`, patchPayload)
+      .put(`${this.salesBaseUrl}/edit/${entry.id}`, patchPayload)
       .subscribe(() => {
         entry.isEditing = false;
         this.fetchSales();
@@ -136,7 +132,7 @@ export class ViewSalesComponent implements OnInit {
   }
 
   filterSaleEnttries() {
-    this.fetchSales()
+    this.fetchSales();
   }
 
   discard(data: SaleEntry) {
@@ -144,8 +140,5 @@ export class ViewSalesComponent implements OnInit {
     data.accessoryName = this.selectedEditData.accessoryName;
     data.profit = this.selectedEditData.profit;
     data.isEditing = false;
-    // return data;
   }
-
-
 }

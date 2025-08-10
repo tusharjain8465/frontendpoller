@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';  // import environment
 
 @Component({
   selector: 'app-sales-management',
@@ -22,6 +23,9 @@ export class SalesManagementComponent implements OnInit {
     profit: '',
     returnFlag: false
   };
+
+  private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
 
   constructor(private http: HttpClient) {}
 
@@ -47,7 +51,7 @@ export class SalesManagementComponent implements OnInit {
     alert(`✅ ${this.saleType === 'sale' ? 'Sale' : 'Return'} entry submitted successfully!`);
 
     this.http
-      .post('http://localhost:8080/api/sales/sale-entry/add', salePayload)
+      .post(`${this.salesBaseUrl}/sale-entry/add`, salePayload)
       .subscribe(() => {
         alert("Entry is added successfully!!!");
       });
@@ -66,7 +70,7 @@ export class SalesManagementComponent implements OnInit {
   }
 
   getClients() {
-    this.http.get<any[]>('http://localhost:8080/api/clients/all')
+    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
       .subscribe({
         next: (res) => this.clients = res,
         error: (err) => console.error('Failed to fetch clients:', err)

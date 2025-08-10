@@ -9,6 +9,7 @@ import { AddClientService } from 'src/app/services/add-client.service';
   styleUrls: ['./forgetpassword.component.css']
 })
 export class ForgotPasswordComponent {
+  
   forgotPasswordForm: FormGroup;
   hidePassword: boolean = true;
   otpSent: boolean = false;

@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from '../models/client.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-
-
 export class ExistingClientService {
-  private clientBaseUrl = 'http://localhost:8080/api/clients';
-  private salesBaseUrl = 'http://localhost:8080/api/sales';
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
+  private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
 
   constructor(private http: HttpClient) { }
 
@@ -34,17 +33,13 @@ export class ExistingClientService {
     return this.http.delete(`${this.clientBaseUrl}/delete/${id}`, { responseType: 'text' });
   }
 
-  // ✅ 5. Confirm/Edit a sale entry by client ID and sale ID
+  // 5. Confirm/Edit a sale entry by client ID and sale ID
   confirmEditSales(id: number, data: any) {
     return this.http.put(`${this.salesBaseUrl}/edit/${id}`, data, { responseType: 'text' });
   }
 
-  // ✅ 6. Delete a sale entry by sale ID
+  // 6. Delete a sale entry by sale ID
   confirmDeleteSales(id: number) {
     return this.http.delete(`${this.salesBaseUrl}/delete/${id}`, { responseType: 'text' });
-
   }
-
-
-
 }

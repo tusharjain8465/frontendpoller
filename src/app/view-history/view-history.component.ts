@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';  // import environment
 
 interface SaleEntry {
   accessoryName: string;
@@ -28,6 +29,9 @@ export class ViewHistoryComponent implements OnInit {
   selectedClient: string = '';
   groupedSales: GroupedSales[] = [];
 
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
+  private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -36,7 +40,7 @@ export class ViewHistoryComponent implements OnInit {
   }
 
   loadClients(): void {
-    this.http.get<any[]>('http://localhost:8080/api/clients/all')
+    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
       .subscribe(data => {
         this.clients = data;
       });
@@ -44,7 +48,7 @@ export class ViewHistoryComponent implements OnInit {
 
   filterSales(): void {
     if (this.selectedClient) {
-      this.http.get<SaleEntry[]>(`http://localhost:8080/api/sales/by-client/${this.selectedClient}`)
+      this.http.get<SaleEntry[]>(`${this.salesBaseUrl}/by-client/${this.selectedClient}`)
         .subscribe(data => {
           this.groupedSales = this.groupSalesByDate(data);
         });
@@ -54,7 +58,7 @@ export class ViewHistoryComponent implements OnInit {
   }
 
   fetchAllSales(): void {
-    this.http.get<SaleEntry[]>('http://localhost:8080/api/sales/all-sales/all')
+    this.http.get<SaleEntry[]>(`${this.salesBaseUrl}/all-sales/all`)
       .subscribe(data => {
         this.groupedSales = this.groupSalesByDate(data);
       });

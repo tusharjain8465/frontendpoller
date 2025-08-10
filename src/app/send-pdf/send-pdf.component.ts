@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { formatDate } from '@angular/common';
+import { environment } from '../../environments/environment';  // import environment
 
 @Component({
   selector: 'app-send-pdf',
@@ -17,7 +18,7 @@ export class SendPdfComponent implements OnInit {
     startDate: '',
     endDate: '',
     days: 0,
-    useDeposit: false,             // ✅ Add toggle for deposit
+    useDeposit: false,
     depositAmount: 0,
     oldBalance: 0,
     depositDatetime: ''
@@ -27,6 +28,9 @@ export class SendPdfComponent implements OnInit {
   previewUrl: SafeResourceUrl | null = null;
   toastMsg: string = '';
 
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
+  private pdfBaseUrl = `${environment.apiBaseUrl}/api/pdf`;
+
   constructor(private sanitizer: DomSanitizer, private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -34,7 +38,7 @@ export class SendPdfComponent implements OnInit {
   }
 
   getClients() {
-    this.http.get<any[]>('http://localhost:8080/api/clients/all')
+    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
       .subscribe({
         next: (res) => this.clients = res,
         error: (err) => console.error('Failed to fetch clients:', err)
@@ -48,12 +52,10 @@ export class SendPdfComponent implements OnInit {
 
     let params = new HttpParams();
 
-    // Client
     if (this.filters.client) {
       params = params.set('clientId', this.filters.client.toString());
     }
 
-    // Date range or days
     if (this.filters.useDateRange) {
       if (this.filters.startDate) {
         params = params.set('from', this.filters.startDate + ' 00:00:00');
@@ -65,7 +67,6 @@ export class SendPdfComponent implements OnInit {
       params = params.set('days', this.filters.days.toString());
     }
 
-    // Deposit info - only if toggle is on
     if (this.filters.useDeposit) {
       if (this.filters.depositAmount > 0) {
         params = params.set('depositAmount', this.filters.depositAmount.toString());
@@ -77,13 +78,11 @@ export class SendPdfComponent implements OnInit {
       }
     }
 
-    // Old Balance
     if (this.filters.oldBalance > 0) {
       params = params.set('oldBalance', this.filters.oldBalance.toString());
     }
 
-    // Call backend API
-    this.http.get('http://localhost:8080/api/pdf/sales', {
+    this.http.get(`${this.pdfBaseUrl}/sales`, {
       params,
       responseType: 'blob'
     }).subscribe({

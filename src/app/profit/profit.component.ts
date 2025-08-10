@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';  // import environment
 
 @Component({
   selector: 'app-profit',
@@ -22,6 +23,9 @@ export class ProfitComponent implements OnInit {
     profit: 0
   };
 
+  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
+  private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -29,7 +33,7 @@ export class ProfitComponent implements OnInit {
   }
 
   loadClients() {
-    this.http.get<any[]>('http://localhost:8080/api/clients/all').subscribe({
+    this.http.get<any[]>(`${this.clientBaseUrl}/all`).subscribe({
       next: data => {
         this.clients = data;
       },
@@ -39,44 +43,43 @@ export class ProfitComponent implements OnInit {
     });
   }
 
- onSubmit() {
-  if ((this.startDate && this.endDate && this.days) || (!this.days && (!this.startDate || !this.endDate))) {
-    alert('⚠️ Please use either Date Range or Days filter — not both.');
-    return;
-  }
-
-  let queryParams = [];
-
-  if (this.startDate && this.endDate) {
-    const from = `${this.startDate} 00:00:00`;
-    const to = `${this.endDate} 23:59:59`;
-    queryParams.push(`from=${encodeURIComponent(from)}`);
-    queryParams.push(`to=${encodeURIComponent(to)}`);
-  }
-
-  if (this.days != null && this.days > 0) {
-    queryParams.push(`days=${this.days}`);
-  }
-
-  const clientId = this.filter.client === 'All' ? '' : this.filter.client;
-  if (clientId) {
-    queryParams.push(`clientId=${clientId}`);
-  }
-
-  const url = `http://localhost:8080/api/sales/profit/by-date-range?${queryParams.join('&')}`;
-
-  this.http.get<any>(url).subscribe({
-    next: (data) => {
-      this.result.totalSales = data.sale;
-      this.result.profit = data.profit;
-      this.isSubmitted = true;
-    },
-    error: (err) => {
-      console.error('Error fetching profit data:', err);
+  onSubmit() {
+    if ((this.startDate && this.endDate && this.days) || (!this.days && (!this.startDate || !this.endDate))) {
+      alert('⚠️ Please use either Date Range or Days filter — not both.');
+      return;
     }
-  });
-}
 
+    let queryParams = [];
+
+    if (this.startDate && this.endDate) {
+      const from = `${this.startDate} 00:00:00`;
+      const to = `${this.endDate} 23:59:59`;
+      queryParams.push(`from=${encodeURIComponent(from)}`);
+      queryParams.push(`to=${encodeURIComponent(to)}`);
+    }
+
+    if (this.days != null && this.days > 0) {
+      queryParams.push(`days=${this.days}`);
+    }
+
+    const clientId = this.filter.client === 'All' ? '' : this.filter.client;
+    if (clientId) {
+      queryParams.push(`clientId=${clientId}`);
+    }
+
+    const url = `${this.salesBaseUrl}/profit/by-date-range?${queryParams.join('&')}`;
+
+    this.http.get<any>(url).subscribe({
+      next: (data) => {
+        this.result.totalSales = data.sale;
+        this.result.profit = data.profit;
+        this.isSubmitted = true;
+      },
+      error: (err) => {
+        console.error('Error fetching profit data:', err);
+      }
+    });
+  }
 
   resetFilter() {
     this.filter.client = 'All';
