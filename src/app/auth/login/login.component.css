@@ -1,81 +1,106 @@
-/* Center the login container on the screen */
+/* Center the login container with a modern gradient */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #667eea, #764ba2);
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Login form box */
 form {
-  background-color: #fff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  padding: 36px 28px;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 400px;
+  max-width: 340px; /* Reduced width */
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.6s ease-out;
 }
 
+
+/* Heading */
 h2 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 28px;
+  margin-bottom: 28px;
+  font-size: 26px;
   color: #333;
+  font-weight: 600;
 }
 
+/* Input fields */
 input {
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 1px solid #d0d0d0;
+  border-radius: 10px;
+  font-size: 15px;
+  background-color: #f9fafc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 input:focus {
-  border-color: #764ba2;
+  border-color: #6a11cb;
+  background-color: #ffffff;
   outline: none;
-  box-shadow: 0 0 5px rgba(118, 75, 162, 0.5);
+  box-shadow: 0 0 6px rgba(106, 17, 203, 0.3);
 }
 
+/* Button styles */
 button {
-  background-color: #764ba2;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
   color: #fff;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
-  font-size: 18px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease, transform 0.15s ease;
 }
 
-button:hover {
-  background-color: #5a3d91;
+button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #5a0eb2, #1f5dd6);
+  transform: translateY(-2px);
 }
 
 button:disabled {
-  background-color: #aaa;
+  background: #bbb;
   cursor: not-allowed;
 }
 
+/* Links */
 .links {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 22px;
+  font-size: 14px;
 }
 
 .links a {
-  color: #764ba2;
+  color: #6a11cb;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s ease;
-  cursor: pointer;
+  transition: color 0.25s ease;
 }
 
 .links a:hover {
   text-decoration: underline;
-  color: #5a3d91;
+  color: #2575fc;
+}
+
+/* Subtle animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

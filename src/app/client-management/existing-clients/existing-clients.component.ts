@@ -64,6 +64,9 @@ export class ExistingClientsComponent implements OnInit {
 
   openDeleteModal(): void {
     this.showDeleteModal = true;
+    this.confirmDelete();
+    this.fetchClients(); // ✅ Reset edit after reload
+
   }
 
   closeDeleteModal(): void {
@@ -102,28 +105,28 @@ export class ExistingClientsComponent implements OnInit {
     });
   }
 
- confirmDeleteSales(data: any): void {
-  this.existingClientService.confirmDeleteSales(data.id).subscribe({
-    next: () => {
-      if (this.selectedClientId != null) {
-        this.existingClientService.getClientById(this.selectedClientId).subscribe({
-          next: (updatedClient) => {
-            const index = this.clients.findIndex(c => c.id === this.selectedClientId);
-            if (index !== -1) {
-              this.clients[index] = updatedClient;
-              this.editedClient = { ...updatedClient };
+  confirmDeleteSales(data: any): void {
+    this.existingClientService.confirmDeleteSales(data.id).subscribe({
+      next: () => {
+        if (this.selectedClientId != null) {
+          this.existingClientService.getClientById(this.selectedClientId).subscribe({
+            next: (updatedClient) => {
+              const index = this.clients.findIndex(c => c.id === this.selectedClientId);
+              if (index !== -1) {
+                this.clients[index] = updatedClient;
+                this.editedClient = { ...updatedClient };
+              }
+            },
+            error: (err) => {
+              console.error('Failed to refresh selected client:', err);
             }
-          },
-          error: (err) => {
-            console.error('Failed to refresh selected client:', err);
-          }
-        });
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to delete sales:', err);
       }
-    },
-    error: (err) => {
-      console.error('Failed to delete sales:', err);
-    }
-  });
-}
+    });
+  }
 
 }

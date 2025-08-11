@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { formatDate } from '@angular/common';
-import { environment } from '../../environments/environment';  // import environment
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-send-pdf',
@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';  // import environ
   styleUrls: ['./send-pdf.component.css']
 })
 export class SendPdfComponent implements OnInit {
+
   clients: any[] = [];
 
   filters = {
@@ -25,13 +26,14 @@ export class SendPdfComponent implements OnInit {
   };
 
   isGenerating = false;
-  previewUrl: SafeResourceUrl | null = null;
+  previewUrl: SafeResourceUrl | null = null;  // Safe preview for iframe
+  pdfBlobUrl: string | null = null;           // Raw blob URL for download
   toastMsg: string = '';
 
   private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private pdfBaseUrl = `${environment.apiBaseUrl}/api/pdf`;
 
-  constructor(private sanitizer: DomSanitizer, private http: HttpClient) {}
+  constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getClients();
@@ -49,6 +51,7 @@ export class SendPdfComponent implements OnInit {
     this.isGenerating = true;
     this.toastMsg = '';
     this.previewUrl = null;
+    this.pdfBlobUrl = null;
 
     let params = new HttpParams();
 
@@ -88,6 +91,7 @@ export class SendPdfComponent implements OnInit {
     }).subscribe({
       next: (blob: Blob) => {
         const blobUrl = URL.createObjectURL(blob);
+        this.pdfBlobUrl = blobUrl;
         this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
         this.toastMsg = '✅ PDF generated successfully!';
         this.isGenerating = false;
@@ -100,4 +104,35 @@ export class SendPdfComponent implements OnInit {
       }
     });
   }
+
+  downloadPDF() {
+    if (!this.pdfBlobUrl) {
+      console.error("No PDF available to download");
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = this.pdfBlobUrl;
+    a.download = 'sales-report.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  sendToWhatsApp() {
+    // Optional: replace with your client's phone number if needed
+    const phoneNumber = ''; // Example: '919876543210' for India
+    const message = 'Hi, here is your sales report. Please check.';
+
+    // Encode message and create WhatsApp URL
+    const whatsappUrl = phoneNumber
+      ? `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+      : `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+    // Open WhatsApp (on mobile: app, on desktop: WhatsApp Web)
+    window.open(whatsappUrl, '_blank');
+  }
+
+
+
 }

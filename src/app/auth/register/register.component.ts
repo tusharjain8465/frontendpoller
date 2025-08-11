@@ -13,8 +13,10 @@ export class RegisterComponent implements AfterViewInit {
   passwordStrengthLabel: string = '';
   passwordStrengthColor: string = '';
   submitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
 
-  constructor(private fb: FormBuilder , private clientsvc : AddClientService) {
+  constructor(private fb: FormBuilder, private clientsvc: AddClientService) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9_]+$/)]],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
@@ -70,19 +72,28 @@ export class RegisterComponent implements AfterViewInit {
   }
 
   onSubmit(): void {
+    this.successMessage = '';
+    this.errorMessage = '';
+
     if (this.registerForm.valid) {
-      // this.submitting = true;
+      this.submitting = true;
 
-      this.clientsvc.registerUser(this.registerForm.value).subscribe(response => {
-
-        // this.submitting = false;
-        this.registerForm.reset();
-        console.log(response)
-
-      })
-      // setTimeout(() => {
-        // alert('Registration successful! Welcome aboard!');
-      // }, 2000);
+      this.clientsvc.registerUser(this.registerForm.value).subscribe({
+        next: (response) => {
+          this.successMessage = 'Registration done successfully!';
+          this.registerForm.reset();
+          this.passwordStrength = 0;
+          this.passwordStrengthLabel = '';
+          this.passwordStrengthColor = '';
+        },
+        error: (err) => {
+          this.errorMessage = 'Registration done successfully!';
+          console.error('Registration error:', err);
+        },
+        complete: () => {
+          this.submitting = false;
+        }
+      });
     } else {
       Object.values(this.registerForm.controls).forEach(control => {
         control.markAsTouched();
@@ -90,12 +101,5 @@ export class RegisterComponent implements AfterViewInit {
       const firstInvalid = document.querySelector('.ng-invalid');
       firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }
-
-  register(data:any) : void {
-
-    
-
-
   }
 }

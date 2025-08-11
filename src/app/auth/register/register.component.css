@@ -5,14 +5,14 @@
   align-items: center;
   min-height: 100vh;
   background: linear-gradient(135deg, #f6f9fc, #e9eff5);
-  padding: 20px;
+  padding: 24px; /* Slightly increased for breathing room */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Form box */
 #registerForm {
   background-color: #ffffff;
-  padding: 40px 30px;
+  padding: 48px 36px; /* More generous padding */
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
@@ -26,7 +26,7 @@
 
 /* Form title */
 #registerForm h2 {
-  margin-bottom: 24px;
+  margin-bottom: 28px; /* A bit more spacing */
   text-align: center;
   font-size: 28px;
   color: #333;
@@ -36,19 +36,21 @@
 /* Input fields */
 #registerForm input {
   width: 100%;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  border: 1px solid #ccd6dd;
+  padding: 16px 18px; /* Slightly more padding inside inputs */
+  margin-bottom: 20px; /* More spacing between inputs */
+  border: 1.5px solid #ccd6dd; /* Slightly thicker border for clarity */
   border-radius: 10px;
   font-size: 16px;
   background-color: #f8fafc;
   transition: border 0.3s, background 0.3s;
+  box-sizing: border-box;
 }
 
 #registerForm input:focus {
   border-color: #3399ff;
   background-color: #ffffff;
   outline: none;
+  box-shadow: 0 0 6px rgba(51, 153, 255, 0.5);
 }
 
 /* Disable style */
@@ -60,49 +62,59 @@ input:disabled {
 
 /* Password strength bar */
 #passwordStrength {
-  height: 6px;
+  height: 8px; /* Slightly thicker bar */
   width: 100%;
   background-color: #e0e0e0;
-  border-radius: 4px;
-  margin-top: -12px;
-  margin-bottom: 12px;
+  border-radius: 6px;
+  margin-top: -16px; /* Adjust margin to avoid crowding */
+  margin-bottom: 14px;
   position: relative;
 }
 
 #strengthFill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: width 0.3s ease-in-out;
 }
 
 #strengthText {
-  font-size: 12px;
+  font-size: 13px;
   text-align: right;
   color: #555;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  font-weight: 600;
 }
 
 /* Button styling */
 .register-btn {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background: linear-gradient(90deg, #007bff, #0056b3);
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 17px;
-  font-weight: 600;
+  border-radius: 12px; /* Slightly more rounded */
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
 }
 
-.register-btn:hover {
+.register-btn:hover:not(:disabled) {
   background: linear-gradient(90deg, #0056b3, #00408a);
+  box-shadow: 0 6px 18px rgba(0, 86, 179, 0.6);
+}
+
+/* Disabled button style */
+.register-btn:disabled {
+  background: #a6c8ff;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Links for register and forgot password */
 .form-footer {
-  margin-top: 16px;
+  margin-top: 20px;
   text-align: center;
   font-size: 14px;
   color: #555;
@@ -111,7 +123,7 @@ input:disabled {
 .form-footer a {
   color: #007bff;
   text-decoration: none;
-  margin: 0 6px;
+  margin: 0 8px;
   transition: color 0.2s;
 }
 
@@ -122,8 +134,24 @@ input:disabled {
 
 /* Error messages */
 small {
-  color: red;
-  font-size: 12px;
-  margin-bottom: 10px;
+  color: #d93025; /* slightly softer red */
+  font-size: 13px;
+  margin-bottom: 14px;
   display: block;
+  font-weight: 600;
+}
+
+/* Success and error message styling for the messages you added */
+.success-message {
+  color: #27ae60;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message {
+  color: #d93025;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
 }
