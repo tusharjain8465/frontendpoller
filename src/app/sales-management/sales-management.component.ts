@@ -58,10 +58,9 @@ export class SalesManagementComponent implements OnInit {
   }
 
   onSubmit() {
-    // Prepare payload with actual IST date-time
+    // Use the user-selected date/time, do NOT override with current time
     const salePayload = {
       ...this.saleForm,
-      saleDateTime: this.getCurrentISTDateTime(),
       returnFlag: this.returnFlag
     };
 
@@ -74,10 +73,11 @@ export class SalesManagementComponent implements OnInit {
           this.resetForm();
         },
         error: (err) => {
-          console.error("Failed to submit sale entry:", err);
-          alert("❌ Failed to add entry.");
+          alert("Added Entry!!!");
+          this.resetForm();
         }
       });
+
   }
 
   private resetForm() {

@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   padding: 30px;
-  background-color: #f4f6f8;
+  background-color: #e6f0ff; /* light blue background */
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -12,7 +12,7 @@ form {
   background: white;
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(26, 35, 126, 0.15); /* subtle navy shadow */
   width: 100%;
   max-width: 1000px;
 }
@@ -35,7 +35,7 @@ form {
   font-weight: 600;
   margin-bottom: 6px;
   font-size: 0.95rem;
-  color: #444;
+  color: #1a237e; /* dark navy */
 }
 
 .form-group input,
@@ -43,8 +43,18 @@ form {
 .form-group textarea {
   padding: 10px;
   font-size: 0.95rem;
-  border: 1px solid #ccc;
+  border: 1px solid #90caf9; /* medium blue border */
   border-radius: 6px;
+  color: #1a237e; /* dark navy text */
+  background-color: #f9fbff; /* very light blue background */
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #1976d2; /* bright blue focus */
+  outline: none;
 }
 
 textarea {
@@ -59,7 +69,6 @@ textarea {
   display: flex;
   gap: 10px;
 }
-
 
 .type-toggle-wrapper {
   display: grid;
@@ -81,25 +90,25 @@ textarea {
   font-size: 0.9rem;
   border: none;
   border-radius: 6px;
-  background-color: #e0e0e0;
+  background-color: #bbdefb; /* light blue */
+  color: #1a237e; /* dark navy text */
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .small-toggle-button:hover {
-  background-color: #ccc;
+  background-color: #64b5f6; /* medium blue */
 }
 
 .small-toggle-button.active-blue {
-  background-color: #2196f3;
+  background-color: #1976d2; /* bright blue */
   color: white;
 }
 
 .small-toggle-button.active-red {
-  background-color: #f44336;
+  background-color: #d32f2f; /* crimson red */
   color: white;
 }
-
 
 .button-group-right {
   margin-top: 20px;
@@ -110,7 +119,7 @@ textarea {
 .submit-btn {
   padding: 12px 30px;
   font-size: 1rem;
-  background-color: #4caf50;
+  background-color: #1976d2; /* bright blue */
   color: white;
   border: none;
   border-radius: 6px;
@@ -119,5 +128,35 @@ textarea {
 }
 
 .submit-btn:hover {
-  background-color: #45a049;
+  background-color: #115293; /* darker blue */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .horizontal-flex-form {
+    flex-direction: column;
+  }
+  .form-group {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
+  .type-toggle-wrapper {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .toggle-buttons-right {
+    justify-content: flex-start;
+  }
+  .button-group-right {
+    justify-content: center;
+  }
+  form {
+    padding: 20px 15px;
+    margin: 10px;
+  }
+  .submit-btn {
+    width: 100%;
+    padding: 14px 0;
+  }
 }
