@@ -3,7 +3,7 @@
   max-width: 900px;
   margin: 60px auto;
   padding: 25px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 245, 255, 0.8));
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(235, 255, 235, 0.85));
   backdrop-filter: blur(15px);
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -19,7 +19,7 @@
 h2 {
   text-align: center;
   margin-bottom: 25px;
-  color: #222;
+  color: #1b5e20; /* Dark green */
   font-weight: 700;
   font-size: 1.8rem;
   letter-spacing: 0.5px;
@@ -40,7 +40,7 @@ h2 {
 .form-group label {
   font-weight: 600;
   margin-bottom: 6px;
-  color: #333;
+  color: #2e7d32; /* Medium green */
 }
 
 /* Inputs & Selects */
@@ -59,14 +59,14 @@ select {
 
 input:focus,
 select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+  border-color: #43a047; /* Bright green focus */
+  box-shadow: 0 0 5px rgba(67, 160, 71, 0.4);
 }
 
 /* Buttons */
 button[type="submit"],
 .download-btn-container button {
-  background: linear-gradient(90deg, #007bff, #0056b3);
+  background: linear-gradient(90deg, #43a047, #2e7d32);
   color: white;
   padding: 12px 20px;
   border: none;
@@ -79,7 +79,7 @@ button[type="submit"],
 
 button[type="submit"]:hover,
 .download-btn-container button:hover {
-  background: linear-gradient(90deg, #0056b3, #004094);
+  background: linear-gradient(90deg, #2e7d32, #1b5e20);
   transform: translateY(-2px);
 }
 
@@ -96,7 +96,7 @@ button[type="submit"]:hover,
 .toast {
   text-align: center;
   margin-top: 10px;
-  color: green;
+  color: #2e7d32;
   font-weight: 600;
   font-size: 1rem;
 }
@@ -112,7 +112,7 @@ button[type="submit"]:hover,
 .preview h3 {
   text-align: center;
   margin-bottom: 12px;
-  color: #444;
+  color: #388e3c;
 }
 
 /* Buttons container */
@@ -123,20 +123,30 @@ button[type="submit"]:hover,
   margin: 15px 0;
 }
 
-
 /* Mobile responsiveness */
 @media (max-width: 600px) {
   .send-pdf-container {
-    margin: 20px;
-    padding: 20px;
+    margin: 15px;
+    padding: 18px;
   }
 
   h2 {
     font-size: 1.4rem;
   }
 
+  .pdf-form {
+    gap: 14px;
+  }
+
+  input,
+  select,
   button {
     font-size: 14px;
     padding: 10px;
+  }
+
+  .download-btn-container {
+    flex-direction: column;
+    gap: 8px;
   }
 }

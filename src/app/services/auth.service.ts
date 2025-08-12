@@ -27,7 +27,7 @@ export class AuthService {
     this.logoutTimer = setTimeout(() => {
       console.log('Auto logout triggered after 10 minutes');
       this.logout();
-    }, 10 * 60 * 1000); // 10 minutes
+    }, 30 * 60 * 1000); // 30 minutes
   }
 
 

@@ -1,14 +1,14 @@
 <div class="view-sales-container">
   <h2>View Sales</h2>
 
+  <!-- Filters -->
   <div class="filter-section">
     <div class="filter-group">
       <label for="clientSelect">Client</label>
-     <select [(ngModel)]="selectedClientId" (change)="filterSaleEnttries()">
-  <option [ngValue]="null">All Clients</option>
-  <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
-</select>
-
+      <select [(ngModel)]="selectedClientId" (change)="filterSaleEnttries()">
+        <option [ngValue]="null">All Clients</option>
+        <option *ngFor="let client of clients" [ngValue]="client.id">{{ client.name }}</option>
+      </select>
     </div>
 
     <div class="filter-group">
@@ -24,18 +24,25 @@
     <button (click)="resetFilters()">Reset</button>
   </div>
 
+  <!-- No Data Message -->
   <div *ngIf="Object.keys(groupedEntries).length === 0" class="no-data">
     No sales found for selected filters.
   </div>
 
+  <!-- Grouped Sales -->
   <div *ngFor="let date of Object.keys(groupedEntries)">
     <div class="date-group">
-      <h3>{{ date }}</h3>
+      <!-- Group Heading with full date -->
+      <h3>{{ date | date: 'fullDate' }}</h3>
 
+      <!-- Sales Entries -->
       <div class="sale-entry" *ngFor="let entry of groupedEntries[date]">
+        
         <!-- View Mode -->
         <div *ngIf="!entry.isEditing" class="entry-row">
-          <div class="entry-field"><strong>Date:</strong> {{ entry.date }}</div>
+          <div class="entry-field">
+            <strong>Date & Time:</strong> {{ entry.saleDateTime | date: 'dd MMM yyyy, hh:mm a' }}
+          </div>
           <div class="entry-field"><strong>Client:</strong> {{ entry.clientName }}</div>
           <div class="entry-field"><strong>Accessory:</strong> {{ entry.accessoryName }}</div>
           <div class="entry-field"><strong>Total Price:</strong> ₹{{ entry.totalPrice }}</div>
@@ -49,16 +56,11 @@
         <!-- Edit Mode -->
         <div *ngIf="entry.isEditing" class="entry-row editing">
           <div class="form-group">
-            <div class="entry-field"><strong>Date:</strong> {{ entry.date }}</div>
-
-            <!-- <label>Date</label>
-            <input type="date" [(ngModel)]="entry.date" /> -->
+            <div class="entry-field">
+              <strong>Date & Time:</strong> {{ entry.saleDateTime | date: 'dd MMM yyyy, hh:mm a' }}
+            </div>
           </div>
           <div class="form-group">
-            <!-- <label>Client</label>
-            <select [(ngModel)]="entry.clientName">
-              <option *ngFor="let client of clients" [value]="client.name">{{ client.name }}</option>
-            </select> -->
             <div class="entry-field"><strong>Client:</strong> {{ entry.clientName }}</div>
           </div>
           <div class="form-group">
@@ -76,9 +78,9 @@
           <div class="entry-actions">
             <button (click)="submitEdit(entry)">Submit</button>
             <button (click)="discard(entry)">Discard</button>
-
           </div>
         </div>
+
       </div>
     </div>
   </div>

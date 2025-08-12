@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 50px auto;
   padding: 40px;
-  background: #fdfdfd;
+  background: #fff8fb; /* soft pink background */
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,9 +17,9 @@
 h2 {
   font-size: 36px;
   margin-bottom: 25px;
-  color: #2c3e50;
+  color: #b23a48; /* deep rose */
   font-weight: 700;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid #ff6f91; /* stronger pink */
   display: inline-block;
   padding-bottom: 5px;
 }
@@ -49,9 +49,9 @@ select {
 }
 
 select:focus {
-  border-color: #007bff;
+  border-color: #ff6f91;
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 5px rgba(255, 111, 145, 0.3);
 }
 
 .history-list {
@@ -66,15 +66,15 @@ select:focus {
   gap: 12px;
   padding: 20px 25px;
   border-radius: 14px;
-  background: linear-gradient(145deg, #e3f2fd, #ffffff);
+  background: linear-gradient(145deg, #ffe4ec, #ffffff); /* faint pink gradient */
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-  border-left: 5px solid #007bff;
+  border-left: 5px solid #ff6f91; /* pink accent */
 }
 
 .date-group h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #007bff;
+  color: #ff6f91;
   margin-bottom: 10px;
 }
 
@@ -92,11 +92,10 @@ select:focus {
 
 .sale-entry:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(0, 123, 255, 0.15);
-  background-color: #e8f3ff; /* light blue background */
-  border-left: 4px solid #007bff;
+  box-shadow: 0 8px 18px rgba(255, 111, 145, 0.15);
+  background-color: #ffeaf1; /* lighter pink hover */
+  border-left: 4px solid #ff6f91;
 }
-
 
 .sale-entry div {
   color: #2d3436;
@@ -105,7 +104,7 @@ select:focus {
 }
 
 .sale-entry strong {
-  color: #34495e;
+  color: #b23a48; /* deep rose */
 }
 
 .no-data {
@@ -114,4 +113,57 @@ select:focus {
   color: #999;
   margin-top: 50px;
   font-style: italic;
+}
+
+/* 📱 Mobile responsiveness */
+@media (max-width: 768px) {
+  .view-history-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  select {
+    width: 100%;
+  }
+
+  .sale-entry {
+    grid-template-columns: 1fr; /* stack details vertically */
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 24px;
+  }
+
+  .date-group {
+    padding: 15px;
+  }
+
+  .sale-entry {
+    padding: 12px;
+  }
+}
+
+
+/* Different faint pink shades for each date group */
+.date-group:nth-child(1n) {
+  background: linear-gradient(145deg, #ffe4ec, #ffffff); /* light pink */
+}
+
+.date-group:nth-child(2n) {
+  background: linear-gradient(145deg, #ffd6e4, #ffffff); /* slightly deeper pink */
+}
+
+.date-group:nth-child(3n) {
+  background: linear-gradient(145deg, #ffecf2, #ffffff); /* softer pastel pink */
 }

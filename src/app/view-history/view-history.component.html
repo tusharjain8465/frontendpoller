@@ -13,6 +13,7 @@
     <div *ngFor="let group of groupedSales" class="date-group">
       <h3>{{ group.date | date: 'fullDate' }}</h3>
       <div *ngFor="let sale of group.entries" class="sale-entry">
+        <div><strong>Time:</strong> {{ sale.saleDateTime | date: 'hh:mm a' }}</div>
         <div><strong>Client:</strong> {{ sale.clientName }}</div>
         <div><strong>Accessory:</strong> {{ sale.accessoryName }}</div>
         <div><strong>Total Price:</strong> ₹{{ sale.totalPrice }}</div>
