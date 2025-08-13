@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';  // import environment
+import { environment } from '../../environments/environment';
+import { ClientCache } from '../shared/client-cache';
+import { Subscription } from 'rxjs';
 
 interface SaleEntry {
   id: number;
-  date: string;               // or saleDateTime: string;
+  date: string;
   clientName: string;
   accessoryName: string;
   totalPrice: number;
   profit: number;
-  quantity: number;           // ✅ Add this
-  saleDateTime: string;       // ✅ Add this
-  returnFlag: boolean;        // ✅ Add this
-  isEditing?: boolean;        // Optional for UI
+  quantity: number;
+  saleDateTime: string;
+  returnFlag: boolean;
+  isEditing?: boolean;
 }
 
 @Component({
@@ -31,20 +33,24 @@ export class ViewSalesComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
 
-  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
+  private clientCacheSub: Subscription | null = null;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.fetchClients();
+    // Subscribe to the BehaviorSubject to get live client updates
+    this.clients = ClientCache.clients$.getValue();
+    this.clientCacheSub = ClientCache.clients$.subscribe(clients => {
+      this.clients = clients;
+    });
+
     this.fetchSales();
   }
 
-  fetchClients(): void {
-    this.http.get<any[]>(`${this.clientBaseUrl}/all`).subscribe((res) => {
-      this.clients = res;
-    });
+  ngOnDestroy(): void {
+    // Avoid memory leaks
+    this.clientCacheSub?.unsubscribe();
   }
 
   fetchSales(): void {
@@ -57,7 +63,7 @@ export class ViewSalesComponent implements OnInit {
       this.salesEntries = res.map((entry: any) => ({
         ...entry,
         isEditing: false,
-        date: entry.saleDateTime?.split('T')[0] || '', // for grouping
+        date: entry.saleDateTime?.split('T')[0] || '',
       }));
       this.filterEntries();
     });
@@ -66,20 +72,13 @@ export class ViewSalesComponent implements OnInit {
   filterEntries(): void {
     let filtered = [...this.salesEntries];
 
-    if (this.startDate) {
-      filtered = filtered.filter((e) => e.date! >= this.startDate);
-    }
-
-    if (this.endDate) {
-      filtered = filtered.filter((e) => e.date! <= this.endDate);
-    }
+    if (this.startDate) filtered = filtered.filter(e => e.date! >= this.startDate);
+    if (this.endDate) filtered = filtered.filter(e => e.date! <= this.endDate);
 
     this.groupedEntries = {};
     for (const entry of filtered) {
       const date = entry.date!;
-      if (!this.groupedEntries[date]) {
-        this.groupedEntries[date] = [];
-      }
+      if (!this.groupedEntries[date]) this.groupedEntries[date] = [];
       this.groupedEntries[date].push(entry);
     }
   }
@@ -92,15 +91,9 @@ export class ViewSalesComponent implements OnInit {
   }
 
   deleteEntry(entry: SaleEntry): void {
-    const confirmed = confirm(`Are you sure you want to delete "${entry.accessoryName}"?`);
-    if (confirmed) {
-      this.http
-        .delete(`${this.salesBaseUrl}/delete/${entry.id}`)
-        .subscribe(() => {
-          this.fetchSales();
-        }, () => {
-          this.fetchSales();
-        });
+    if (confirm(`Are you sure you want to delete "${entry.accessoryName}"?`)) {
+      this.http.delete(`${this.salesBaseUrl}/delete/${entry.id}`)
+        .subscribe(() => this.fetchSales(), () => this.fetchSales());
     }
   }
 
@@ -117,14 +110,13 @@ export class ViewSalesComponent implements OnInit {
       quantity: entry.quantity,
       totalPrice: entry.totalPrice,
       profit: entry.profit,
-      saleDateTime: entry.saleDateTime.split('.')[0], // remove milliseconds if any
+      saleDateTime: entry.saleDateTime.split('.')[0],
       returnFlag: entry.returnFlag,
       clientName: entry.clientName,
       id: entry.id
     };
 
-    this.http
-      .put(`${this.salesBaseUrl}/edit/${entry.id}`, patchPayload)
+    this.http.put(`${this.salesBaseUrl}/edit/${entry.id}`, patchPayload)
       .subscribe(() => {
         entry.isEditing = false;
         this.fetchSales();

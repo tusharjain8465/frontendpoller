@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';  // import environment
+import { environment } from '../../environments/environment';
+import { ClientCache } from '../shared/client-cache';
+import { AddClientService } from '../services/add-client.service';
 
 interface SaleEntry {
   accessoryName: string;
@@ -29,21 +31,23 @@ export class ViewHistoryComponent implements OnInit {
   selectedClient: string = '';
   groupedSales: GroupedSales[] = [];
 
-  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private addClientService: AddClientService) {}
 
   ngOnInit(): void {
     this.loadClients();
     this.fetchAllSales();
   }
 
-  loadClients(): void {
-    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
-      .subscribe(data => {
-        this.clients = data;
-      });
+  private loadClients(): void {
+    // Subscribe to global client cache
+    ClientCache.clients$.subscribe(res => {
+      this.clients = res;
+    });
+
+    // Fetch from backend only if cache not loaded
+    if (!ClientCache.loaded) this.addClientService.refreshClients();
   }
 
   filterSales(): void {
@@ -64,22 +68,16 @@ export class ViewHistoryComponent implements OnInit {
       });
   }
 
-  groupSalesByDate(sales: SaleEntry[]): GroupedSales[] {
+  private groupSalesByDate(sales: SaleEntry[]): GroupedSales[] {
     const grouped: { [date: string]: SaleEntry[] } = {};
 
     for (const sale of sales) {
       const date = sale.saleDateTime.split('T')[0];
-
-      if (!grouped[date]) {
-        grouped[date] = [];
-      }
+      if (!grouped[date]) grouped[date] = [];
       grouped[date].push(sale);
     }
 
-    return Object.entries(grouped).map(([date, entries]) => ({
-      date,
-      entries
-    }));
+    return Object.entries(grouped).map(([date, entries]) => ({ date, entries }));
   }
 
 }

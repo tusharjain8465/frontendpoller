@@ -1,0 +1,24 @@
+<div class="form-container">
+  <h2>Add Deposit</h2>
+  <form (ngSubmit)="saveDeposit()">
+
+    <label>Client</label>
+    <select [(ngModel)]="selectedClientId" name="client" required>
+      <option value="" disabled>Select Client</option>
+      <option *ngFor="let client of clients" [value]="client.id">{{client.name}}</option>
+    </select>
+
+    <label>Deposit Date</label>
+    <input type="datetime-local" [(ngModel)]="depositDate" name="depositDate" required/>
+
+    <label>Deposit Amount</label>
+    <input type="number" [(ngModel)]="amount" name="amount" required>
+
+    <label>Note</label>
+    <textarea [(ngModel)]="note" name="note" rows="3"></textarea>
+
+    <button type="submit">Save</button>
+    <button type="button" (click)="cancel()">Cancel</button>
+
+  </form>
+</div>

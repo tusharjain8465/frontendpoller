@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from '../models/client.model';
 import { environment } from '../../environments/environment';
+import { tap } from 'rxjs/operators';
+import { ClientCache } from '../shared/client-cache';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,11 @@ export class ExistingClientService {
   private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
 
+  private baseUrl = environment.apiBaseUrl;
+
+
   constructor(private http: HttpClient) { }
+
 
   // 1. Get all clients
   getAllClients(): Observable<Client[]> {
@@ -30,7 +37,19 @@ export class ExistingClientService {
 
   // 4. Delete client
   deleteClient(id: number): Observable<string> {
-    return this.http.delete(`${this.clientBaseUrl}/delete/${id}`, { responseType: 'text' });
+    return this.http.delete(`${this.clientBaseUrl}/delete/${id}`, { responseType: 'text' }).pipe(
+      tap(() => {
+        // Refresh client cache automatically after add
+        this.refreshClients();
+      })
+    );
+  }
+
+  refreshClients() {
+    this.http.get<any[]>(`${this.baseUrl}/api/clients/all`).subscribe({
+      next: (res) => ClientCache.setClients(res),
+      error: (err) => console.error('Failed to refresh clients:', err)
+    });
   }
 
   // 5. Confirm/Edit a sale entry by client ID and sale ID

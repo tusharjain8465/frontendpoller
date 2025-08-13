@@ -10,7 +10,7 @@ body::before {
 
 
 body {
-  background-image: url('assets/new.png');
+  /* background-image: url('assets/new.jpg'); */
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

@@ -1,0 +1,182 @@
+/* Header with Add button */
+.deposit-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.deposit-header h2 {
+  color: #661717; /* dark red heading */
+  font-size: 1.8rem;
+}
+
+.add-btn {
+  background-color: #ff4d4d; /* bright red */
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #cc0000;
+}
+
+.add-btn i {
+  margin-right: 5px;
+}
+
+/* Filter section */
+.filter-section {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-section label {
+  font-weight: bold;
+  color: #333;
+}
+
+.filter-section select {
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  min-width: 140px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.filter-section select:focus {
+  border-color: #661717;
+  outline: none;
+}
+
+/* Table styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+th {
+  background-color: #661717;
+  color: white;
+  font-weight: 600;
+}
+
+tbody tr {
+  background-color: #fff0f0; /* very light pink for rows */
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #ffe6e6; /* highlight row on hover */
+}
+
+/* Buttons inside table */
+td button {
+  margin: 0 5px 0 0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.2s ease;
+}
+
+td button:hover {
+  opacity: 0.8;
+}
+
+/* Specific button colors */
+td button:first-child { /* Edit */
+  background-color: #ffa500; /* orange */
+  color: white;
+}
+
+td button:nth-child(2) { /* Delete */
+  background-color: #ff4d4d; /* red */
+  color: white;
+}
+
+td button:nth-child(3) { /* Submit */
+  background-color: #28a745; /* green */
+  color: white;
+}
+
+td button:nth-child(4) { /* Discard */
+  background-color: #6c757d; /* grey */
+  color: white;
+}
+
+/* Inputs in table */
+td input[type="number"],
+td input[type="text"] {
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  width: 100px;
+}
+
+td input:focus {
+  border-color: #661717;
+  outline: none;
+}
+
+/* Highlight row being edited */
+tr.editing-row {
+  background-color: #fff2e6 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .deposit-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+  td input[type="number"],
+  td input[type="text"] {
+    width: 80px;
+  }
+
+  th, td {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}

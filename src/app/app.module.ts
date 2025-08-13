@@ -21,6 +21,9 @@ import { ViewSalesComponent } from './view-sales/view-sales.component';
 import { SendPdfComponent } from './send-pdf/send-pdf.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ForgotPasswordComponent } from './auth/forgetpassword/forgetpassword.component';
+import { SalesDashboardComponent } from './sales-dashboard/sales-dashboard.component';
+import { DepositComponent } from './deposit/deposit.component';
+import { AddDepositComponent } from './deposit/add-deposit/add-deposit.component';
 
 
 
@@ -40,6 +43,9 @@ import { ForgotPasswordComponent } from './auth/forgetpassword/forgetpassword.co
     ViewSalesComponent,
     SendPdfComponent,
     ForgotPasswordComponent,
+    SalesDashboardComponent,
+    DepositComponent,
+    AddDepositComponent,
   ],
   imports: [
     BrowserModule,

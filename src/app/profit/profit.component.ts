@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';  // import environment
+import { environment } from '../../environments/environment';
+import { ClientCache } from '../shared/client-cache';
+import { AddClientService } from '../services/add-client.service';
 
 @Component({
   selector: 'app-profit',
@@ -9,38 +11,31 @@ import { environment } from '../../environments/environment';  // import environ
 })
 export class ProfitComponent implements OnInit {
   clients: { id: number, name: string }[] = [];
-  filter = {
-    client: 'All'
-  };
+  filter = { client: 'All' };
 
   startDate: string = '';
   endDate: string = '';
   days: number | null = null;
   isSubmitted = false;
 
-  result = {
-    totalSales: 0,
-    profit: 0
-  };
+  result = { totalSales: 0, profit: 0 };
 
-  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private addClientService: AddClientService) {}
 
   ngOnInit(): void {
     this.loadClients();
   }
 
-  loadClients() {
-    this.http.get<any[]>(`${this.clientBaseUrl}/all`).subscribe({
-      next: data => {
-        this.clients = data;
-      },
-      error: err => {
-        console.error('Error fetching clients:', err);
-      }
+  private loadClients() {
+    // Subscribe to global client cache
+    ClientCache.clients$.subscribe(res => {
+      this.clients = res;
     });
+
+    // Fetch from backend only if cache not loaded
+    if (!ClientCache.loaded) this.addClientService.refreshClients();
   }
 
   onSubmit() {
@@ -49,7 +44,7 @@ export class ProfitComponent implements OnInit {
       return;
     }
 
-    let queryParams = [];
+    let queryParams: string[] = [];
 
     if (this.startDate && this.endDate) {
       const from = `${this.startDate} 00:00:00`;
@@ -63,9 +58,7 @@ export class ProfitComponent implements OnInit {
     }
 
     const clientId = this.filter.client === 'All' ? '' : this.filter.client;
-    if (clientId) {
-      queryParams.push(`clientId=${clientId}`);
-    }
+    if (clientId) queryParams.push(`clientId=${clientId}`);
 
     const url = `${this.salesBaseUrl}/profit/by-date-range?${queryParams.join('&')}`;
 
@@ -87,9 +80,6 @@ export class ProfitComponent implements OnInit {
     this.endDate = '';
     this.days = null;
     this.isSubmitted = false;
-    this.result = {
-      totalSales: 0,
-      profit: 0
-    };
+    this.result = { totalSales: 0, profit: 0 };
   }
 }

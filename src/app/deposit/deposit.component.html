@@ -1,0 +1,55 @@
+<div class="deposit-header">
+  <h2>Deposits</h2>
+  <a class="add-btn" routerLink="/deposit/add">
+    <i class="fas fa-plus"></i> Add Deposit
+  </a>
+</div>
+
+<div class="filter-section">
+  <label>Filter by Client:</label>
+  <select [(ngModel)]="selectedClientId" (change)="filterByClient()">
+    <option [ngValue]="null">All Clients</option>
+    <option *ngFor="let client of clients" [ngValue]="client.id">{{client.name}}</option>
+  </select>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Client Name</th>
+      <th>Date & Time</th>
+      <th>Deposit Amount</th>
+      <th>Note</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let deposit of filteredDeposits">
+      <td>{{deposit.clientName}}</td>
+      <td>{{deposit.formattedDate}}</td>
+
+      <!-- Inline editing for amount -->
+      <td *ngIf="!deposit.isEditing">₹{{deposit.amount}}</td>
+      <td *ngIf="deposit.isEditing">
+        <input type="number" [(ngModel)]="deposit.tempAmount">
+      </td>
+
+      <!-- Inline editing for note -->
+      <td *ngIf="!deposit.isEditing">{{deposit.note}}</td>
+      <td *ngIf="deposit.isEditing">
+        <input type="text" [(ngModel)]="deposit.tempNote">
+      </td>
+
+      <!-- Action buttons -->
+      <td>
+        <!-- Show Edit & Delete only if NOT editing -->
+        <button *ngIf="!deposit.isEditing" (click)="editDeposit(deposit)">Edit</button>
+        <button *ngIf="!deposit.isEditing" (click)="deleteDeposit(deposit)">Delete</button>
+
+        <!-- Show Submit & Discard only when editing -->
+        <button *ngIf="deposit.isEditing" (click)="submitEdit(deposit)">Submit</button>
+        <button *ngIf="deposit.isEditing" (click)="discardChanges(deposit)">Discard</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

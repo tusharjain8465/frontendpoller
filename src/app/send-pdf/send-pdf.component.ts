@@ -1,8 +1,11 @@
+// src/app/send-pdf/send-pdf.component.ts
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { ClientCache } from '../shared/client-cache';
+import { AddClientService } from '../services/add-client.service';
 
 @Component({
   selector: 'app-send-pdf',
@@ -14,7 +17,7 @@ export class SendPdfComponent implements OnInit {
   clients: any[] = [];
 
   filters = {
-    client: '',
+    client: null as number | null,
     useDateRange: false,
     startDate: '',
     endDate: '',
@@ -26,28 +29,33 @@ export class SendPdfComponent implements OnInit {
   };
 
   isGenerating = false;
-  previewUrl: SafeResourceUrl | null = null;  // Safe preview for iframe
-  pdfBlobUrl: string | null = null;           // Raw blob URL for download
+  previewUrl: SafeResourceUrl | null = null;
+  pdfBlobUrl: string | null = null;
   toastMsg: string = '';
 
-  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
   private pdfBaseUrl = `${environment.apiBaseUrl}/api/pdf`;
 
-  constructor(private sanitizer: DomSanitizer, private http: HttpClient) { }
+  constructor(
+    private sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private addClientService: AddClientService
+  ) { }
 
   ngOnInit(): void {
-    this.getClients();
+    this.loadClients();
   }
 
-  getClients() {
-    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
-      .subscribe({
-        next: (res) => this.clients = res,
-        error: (err) => console.error('Failed to fetch clients:', err)
-      });
+  private loadClients(): void {
+    // Subscribe to the reactive client cache
+    ClientCache.clients$.subscribe(res => this.clients = res);
+
+    // Fetch clients only if cache not loaded
+    if (!ClientCache.loaded) {
+      this.addClientService.refreshClients();
+    }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.isGenerating = true;
     this.toastMsg = '';
     this.previewUrl = null;
@@ -55,61 +63,45 @@ export class SendPdfComponent implements OnInit {
 
     let params = new HttpParams();
 
-    if (this.filters.client) {
-      params = params.set('clientId', this.filters.client.toString());
-    }
+    if (this.filters.client != null) params = params.set('clientId', this.filters.client.toString());
 
     if (this.filters.useDateRange) {
-      if (this.filters.startDate) {
-        params = params.set('from', this.filters.startDate + ' 00:00:00');
-      }
-      if (this.filters.endDate) {
-        params = params.set('to', this.filters.endDate + ' 23:59:59');
-      }
+      if (this.filters.startDate) params = params.set('from', this.filters.startDate + ' 00:00:00');
+      if (this.filters.endDate) params = params.set('to', this.filters.endDate + ' 23:59:59');
     } else if (this.filters.days > 0) {
       params = params.set('days', this.filters.days.toString());
     }
 
     if (this.filters.useDeposit) {
-      if (this.filters.depositAmount > 0) {
-        params = params.set('depositAmount', this.filters.depositAmount.toString());
-      }
-
+      if (this.filters.depositAmount > 0) params = params.set('depositAmount', this.filters.depositAmount.toString());
       if (this.filters.depositDatetime) {
         const formatted = formatDate(this.filters.depositDatetime, 'yyyy-MM-dd HH:mm:ss', 'en-IN');
         params = params.set('depositDatetime', formatted);
       }
     }
 
-    if (this.filters.oldBalance > 0) {
-      params = params.set('oldBalance', this.filters.oldBalance.toString());
-    }
+    if (this.filters.oldBalance > 0) params = params.set('oldBalance', this.filters.oldBalance.toString());
 
-    this.http.get(`${this.pdfBaseUrl}/sales`, {
-      params,
-      responseType: 'blob'
-    }).subscribe({
-      next: (blob: Blob) => {
-        const blobUrl = URL.createObjectURL(blob);
-        this.pdfBlobUrl = blobUrl;
-        this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
-        this.toastMsg = '✅ PDF generated successfully!';
-        this.isGenerating = false;
-        setTimeout(() => this.toastMsg = '', 3000);
-      },
-      error: (err) => {
-        this.toastMsg = '❌ Failed to generate PDF.';
-        console.error(err);
-        this.isGenerating = false;
-      }
-    });
+    this.http.get(`${this.pdfBaseUrl}/sales`, { params, responseType: 'blob' })
+      .subscribe({
+        next: (blob: Blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+          this.pdfBlobUrl = blobUrl;
+          this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+          this.toastMsg = '✅ PDF generated successfully!';
+          this.isGenerating = false;
+          setTimeout(() => this.toastMsg = '', 3000);
+        },
+        error: (err) => {
+          this.toastMsg = '❌ Failed to generate PDF.';
+          console.error(err);
+          this.isGenerating = false;
+        }
+      });
   }
 
-  downloadPDF() {
-    if (!this.pdfBlobUrl) {
-      console.error("No PDF available to download");
-      return;
-    }
+  downloadPDF(): void {
+    if (!this.pdfBlobUrl) return;
 
     const a = document.createElement('a');
     a.href = this.pdfBlobUrl;
@@ -119,20 +111,13 @@ export class SendPdfComponent implements OnInit {
     a.remove();
   }
 
-  sendToWhatsApp() {
-    // Optional: replace with your client's phone number if needed
-    const phoneNumber = ''; // Example: '919876543210' for India
+  sendToWhatsApp(): void {
+    const phoneNumber = ''; // Optional
     const message = 'Hi, here is your sales report. Please check.';
-
-    // Encode message and create WhatsApp URL
     const whatsappUrl = phoneNumber
       ? `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
       : `https://wa.me/?text=${encodeURIComponent(message)}`;
 
-    // Open WhatsApp (on mobile: app, on desktop: WhatsApp Web)
     window.open(whatsappUrl, '_blank');
   }
-
-
-
 }

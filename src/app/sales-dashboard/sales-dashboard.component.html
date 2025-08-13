@@ -1,0 +1,30 @@
+<div class="dashboard-container">
+  <div class="period-buttons">
+    <button [class.active]="currentPeriod === 'today'" (click)="onPeriodChange('today')">Today</button>
+    <button [class.active]="currentPeriod === 'week'" (click)="onPeriodChange('week')">Week</button>
+    <button [class.active]="currentPeriod === 'month'" (click)="onPeriodChange('month')">Month</button>
+  </div>
+
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>Average Sale</h3>
+      <p>₹{{ averageSale | number:'1.0-2' }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Average Profit</h3>
+      <p>₹{{ averageProfit | number:'1.0-2' }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Highest Sale</h3>
+      <p>₹{{ highestSale | number }}</p>
+    </div>
+    <div class="stat-card">
+      <h3>Highest Profit</h3>
+      <p>₹{{ highestProfit | number }}</p>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="salesChart"></canvas>
+  </div>
+</div>

@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../../environments/environment';  // import environment
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { ClientCache } from '../shared/client-cache';
+import { AddClientService } from '../services/add-client.service';
 
 @Component({
   selector: 'app-sales-management',
@@ -12,9 +14,10 @@ export class SalesManagementComponent implements OnInit {
   clients: any[] = [];
   saleType: 'sale' | 'return' = 'sale';
   returnFlag: boolean = false;
+  isSubmitting: boolean = false;
 
   saleForm: any = {
-    saleDateTime: '', // will be set on ngOnInit
+    saleDateTime: '',
     clientId: 0,
     accessoryName: '',
     note: '',
@@ -24,20 +27,18 @@ export class SalesManagementComponent implements OnInit {
   };
 
   private salesBaseUrl = `${environment.apiBaseUrl}/api/sales`;
-  private clientBaseUrl = `${environment.apiBaseUrl}/api/clients`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private addClientService: AddClientService) { }
 
   ngOnInit(): void {
-    // Set today's date and time in IST when form loads
     this.saleForm.saleDateTime = this.getCurrentISTDateTime();
-    this.getClients();
+    this.loadClients();
   }
 
   // Helper: Get current IST date-time in "yyyy-MM-ddTHH:mm:ss" format
   private getCurrentISTDateTime(): string {
     const now = new Date();
-    const istOffsetMinutes = 330; // IST = UTC+5:30
+    const istOffsetMinutes = 330;
     const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     const istTime = new Date(utc + (istOffsetMinutes * 60000));
 
@@ -52,32 +53,48 @@ export class SalesManagementComponent implements OnInit {
   }
 
 
+  private loadClients() {
+    // Subscribe to reactive client cache
+    ClientCache.clients$.subscribe(res => this.clients = res);
+
+    // Fetch from backend only if cache is empty
+    if (!ClientCache.loaded) this.addClientService.refreshClients();
+  }
+
   toggleSaleType(type: 'sale' | 'return') {
     this.saleType = type;
     this.returnFlag = (type === 'return');
   }
 
   onSubmit() {
-    // Use the user-selected date/time, do NOT override with current time
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+
+    let saleDateTime = this.saleForm.saleDateTime;
+    if (saleDateTime && saleDateTime.length === 16) saleDateTime += ":00";
+
     const salePayload = {
       ...this.saleForm,
-      returnFlag: this.returnFlag
+      saleDateTime,
+      returnFlag: this.returnFlag,
+      totalPrice: Number(this.saleForm.totalPrice),
+      profit: Number(this.saleForm.profit),
+      quantity: this.saleForm.quantity ? Number(this.saleForm.quantity) : 1
     };
 
-    console.log("Submitted Payload:", salePayload);
-
-    this.http.post(`${this.salesBaseUrl}/sale-entry/add`, salePayload)
+    this.http.post(`${this.salesBaseUrl}/sale-entry/add`, salePayload, { responseType: 'text' })
       .subscribe({
         next: () => {
           alert(`✅ ${this.saleType === 'sale' ? 'Sale' : 'Return'} entry submitted successfully!`);
           this.resetForm();
+          this.isSubmitting = false;
         },
         error: (err) => {
-          alert("Added Entry!!!");
-          this.resetForm();
+          console.error('Failed to submit sale entry:', err);
+          alert("❌ Failed to submit entry. Please try again.");
+          this.isSubmitting = false;
         }
       });
-
   }
 
   private resetForm() {
@@ -92,11 +109,5 @@ export class SalesManagementComponent implements OnInit {
     };
   }
 
-  getClients() {
-    this.http.get<any[]>(`${this.clientBaseUrl}/all`)
-      .subscribe({
-        next: (res) => this.clients = res,
-        error: (err) => console.error('Failed to fetch clients:', err)
-      });
-  }
+
 }

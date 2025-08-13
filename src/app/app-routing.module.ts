@@ -15,6 +15,9 @@ import { AddClientComponent } from './client-management/add-client/add-client.co
 import { ExistingClientsComponent } from './client-management/existing-clients/existing-clients.component';
 import { ForgotPasswordComponent } from './auth/forgetpassword/forgetpassword.component';
 import { AuthGuard } from './auth/auth.guard'; // 👈 Import the guard
+import { SalesDashboardComponent } from './sales-dashboard/sales-dashboard.component';
+import { DepositComponent } from './deposit/deposit.component';
+import { AddDepositComponent } from './deposit/add-deposit/add-deposit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -30,10 +33,15 @@ const routes: Routes = [
   { path: 'view-history', component: ViewHistoryComponent, canActivate: [AuthGuard] },
   { path: 'view-sales', component: ViewSalesComponent, canActivate: [AuthGuard] },
   { path: 'send-pdf', component: SendPdfComponent, canActivate: [AuthGuard] },
-  { path: 'add-client', component: AddClientComponent, canActivate: [AuthGuard] },
-  { path: 'existing-clients', component: ExistingClientsComponent, canActivate: [AuthGuard] },
-];
+  { path: 'sales-dashboard', component: SalesDashboardComponent, canActivate: [AuthGuard] },
 
+  // 👇 Deposit routes
+  { path: 'deposit', component: DepositComponent, canActivate: [AuthGuard] },
+  { path: 'deposit/add', component: AddDepositComponent, canActivate: [AuthGuard] },
+
+  // Wildcard route (optional)
+  { path: '**', redirectTo: 'login' }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
