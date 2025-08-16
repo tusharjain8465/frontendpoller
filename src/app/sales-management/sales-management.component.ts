@@ -38,7 +38,7 @@ export class SalesManagementComponent implements OnInit {
   // Helper: Get current IST date-time in "yyyy-MM-ddTHH:mm:ss" format
   private getCurrentISTDateTime(): string {
     const now = new Date();
-    const istOffsetMinutes = 330;
+    const istOffsetMinutes = 330; // IST = UTC+5:30
     const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     const istTime = new Date(utc + (istOffsetMinutes * 60000));
 
@@ -51,7 +51,6 @@ export class SalesManagementComponent implements OnInit {
 
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   }
-
 
   private loadClients() {
     // Subscribe to reactive client cache
@@ -85,6 +84,7 @@ export class SalesManagementComponent implements OnInit {
     this.http.post(`${this.salesBaseUrl}/sale-entry/add`, salePayload, { responseType: 'text' })
       .subscribe({
         next: () => {
+          this.playBeep(); // <-- Play beep here
           alert(`✅ ${this.saleType === 'sale' ? 'Sale' : 'Return'} entry submitted successfully!`);
           this.resetForm();
           this.isSubmitting = false;
@@ -95,6 +95,17 @@ export class SalesManagementComponent implements OnInit {
           this.isSubmitting = false;
         }
       });
+  }
+
+  // Beep function
+  private playBeep() {
+    const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = context.createOscillator();
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(440, context.currentTime); // A4 note
+    oscillator.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.2); // 0.2 sec beep
   }
 
   private resetForm() {
@@ -108,6 +119,4 @@ export class SalesManagementComponent implements OnInit {
       returnFlag: this.saleType === 'return'
     };
   }
-
-
 }
